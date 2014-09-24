@@ -8,51 +8,112 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Tree;
 
 public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 
 	private List<ILaunchConfiguration> launchConfigurations;
-	private TabComposite content;
+	private Composite composite;
+	private CheckboxTreeViewer checkboxTreeViewer;
 
 	@Override
-	public void createControl(Composite parent) {
+	public void createControl(Composite parent) {						
+		composite = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		composite.setLayout(layout);
+		GridData data = new GridData(GridData.FILL);
+		data.grabExcessHorizontalSpace = true;
+		composite.setLayoutData(data);
+
+		addFirstSection(composite);
+		addSeparator(composite);
+		checkboxTreeViewer = new CheckboxTreeViewer(composite, SWT.BORDER);
+		Tree tree = checkboxTreeViewer.getTree();
+		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		checkboxTreeViewer.setContentProvider(new SimpleTreeContentProvider(){
+			@Override
+			public Object[] getElements(Object inputElement) {				
+				return getLaunchConfigurations().toArray();
+			}});		
+		SimpleTreeLabelProvider labelProvider = new SimpleTreeLabelProvider();
+		checkboxTreeViewer.setLabelProvider(labelProvider);
+		checkboxTreeViewer.setInput("root");
+        setControl(composite);		
+	}
+	
+	public void refreshTree() {
+		checkboxTreeViewer.refresh();
+	}
+	
+	private void addFirstSection(Composite parent) {
+		Composite composite = createDefaultComposite(parent);
+		//Label for path field
+		Label pathLabel = new Label(composite, SWT.NONE);
+		pathLabel.setText("Choose configurations to launch in bunch");
+
+	}
+
+	private void addSeparator(Composite parent) {
+		Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
+		GridData gridData = new GridData();
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		separator.setLayoutData(gridData);
+	}
+
+	private Composite createDefaultComposite(Composite parent) {
+		Composite composite = new Composite(parent, SWT.NULL);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		composite.setLayout(layout);
+
+		GridData data = new GridData();
+		data.verticalAlignment = GridData.FILL;
+		data.horizontalAlignment = GridData.FILL;
+		composite.setLayoutData(data);		
+
+		return composite;
+	}		
+
+	@Override
+	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {        
 		try {
-			setLaunchConfigurations(Utils.getAllLaunchConfigurations());
+			System.out.print("!!! ===" + configuration.getAttribute("field1", "default"));
 		} catch (CoreException e) {
-			setLaunchConfigurations(new ArrayList<ILaunchConfiguration>());
+			setErrorMessage(e.getMessage());
 		}
-		TreeContentProvider contentProvider = new TreeContentProvider();		
-		TreeLabelProvider labelProvider = new TreeLabelProvider();
-		content = new TabComposite(parent, contentProvider, labelProvider, SWT.NONE);
-        setControl(content);		
 	}
 
 	@Override
-	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		System.out.print("arg0");
-	}
-
-	@Override
-	public void initializeFrom(ILaunchConfiguration configuration) {
+	public void initializeFrom(ILaunchConfiguration configuration) {		 
 		try {
 			setLaunchConfigurations(Utils.getAvailableToRunLaunchConfigurations(configuration));
 		} catch (CoreException e) {
 			setLaunchConfigurations(new ArrayList<ILaunchConfiguration>());
 		}		
-		content.refreshTree();
+		refreshTree();
+		updateLaunchConfigurationDialog();
+		try {
+			configuration.getWorkingCopy().setAttribute("field1", "value1");
+		} catch (CoreException e) {
+			setErrorMessage(e.getMessage());
+		}
 	}
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		// TODO Auto-generated method stub
-		System.out.print("arg0");
+		configuration.setAttribute("field1", "value1"); 
+		try {
+			configuration.doSave();
+		} catch (CoreException e) {
+			setErrorMessage(e.getMessage());
+		}
 	}
 
 	@Override
@@ -60,6 +121,13 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		// TODO Auto-generated method stub
 		return "Launchers";
 	}
+	
+	@Override
+	public boolean isValid(ILaunchConfiguration launchConfig) {
+		setErrorMessage(null);
+		setMessage(null);
+		return true;
+	}	
 	
 	public List<ILaunchConfiguration> getLaunchConfigurations() {
 		if (launchConfigurations == null) {
@@ -71,77 +139,5 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	public void setLaunchConfigurations(List<ILaunchConfiguration> launchConfigurations) {
 		this.launchConfigurations = launchConfigurations;
 	}
-
-	class TreeContentProvider implements ITreeContentProvider {
-
-		@Override
-		public void dispose() {		
-		}
-
-		@Override
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {	
-		}
-
-		@Override
-		public Object[] getElements(Object inputElement) {
-			return getLaunchConfigurations().toArray();
-		}
-
-		@Override
-		public Object[] getChildren(Object parentElement) {
-			return null;
-		}
-
-		@Override
-		public Object getParent(Object element) {			// 
-			return null;
-		}
-
-		@Override
-		public boolean hasChildren(Object element) {
-			return false;
-		}
-	}
-	
-	class TreeLabelProvider implements ILabelProvider {
-
-		@Override
-		public void addListener(ILabelProviderListener listener) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void dispose() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public boolean isLabelProperty(Object element, String property) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public void removeListener(ILabelProviderListener listener) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public Image getImage(Object element) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public String getText(Object element) {
-		    // Get the name of the file
-			ILaunchConfiguration configuration = ((ILaunchConfiguration) element);
-		    return configuration.getName();
-		}
-		
-	} 
 
 }

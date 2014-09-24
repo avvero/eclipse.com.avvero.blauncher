@@ -19,6 +19,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate  {
 			if (!conf.getName().equals(configuration.getName())) {
 				System.out.println(conf.getName());				
 				conf.launch(mode, new SubProgressMonitor(monitor, 1), true);	
+//				DebugUITools.launch(configuration, mode); 
 			}			
 		}		
 	}
