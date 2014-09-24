@@ -26,5 +26,4 @@
             type="org.eclipse.blauncher.ui.launchConfigurationType2">
       </launchConfigurationTabGroup>
    </extension>
-
 </plugin>

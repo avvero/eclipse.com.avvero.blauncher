@@ -3,10 +3,11 @@ package org.eclipse.blauncher.ui.tabs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.blauncher.ui.BlauncherConstants;
 import org.eclipse.blauncher.ui.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy; 
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.swt.SWT;
@@ -15,16 +16,23 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.PlatformUI;
 
 public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
+	
+	SelectLouncherTab () {
+		setHelpContextId(BlauncherConstants.LAUNCH_CONFIGURATION_DIALOG_COMMON_TAB);
+	}
 
-	private List<ILaunchConfiguration> launchConfigurations;
-	private Composite composite;
+	private List<ILaunchConfiguration> launchConfigurations;	
 	private CheckboxTreeViewer checkboxTreeViewer;
 
 	@Override
 	public void createControl(Composite parent) {						
-		composite = new Composite(parent, SWT.NONE);
+		Composite composite = new Composite(parent, SWT.NONE);
+        setControl(composite);	
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), getHelpContextId());
+		
 		GridLayout layout = new GridLayout();
 		composite.setLayout(layout);
 		GridData data = new GridData(GridData.FILL);
@@ -43,8 +51,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 			}});		
 		SimpleTreeLabelProvider labelProvider = new SimpleTreeLabelProvider();
 		checkboxTreeViewer.setLabelProvider(labelProvider);
-		checkboxTreeViewer.setInput("root");
-        setControl(composite);		
+		checkboxTreeViewer.setInput("root");	
 	}
 	
 	public void refreshTree() {
@@ -83,11 +90,11 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {        
-		try {
-			System.out.print("!!! ===" + configuration.getAttribute("field1", "default"));
-		} catch (CoreException e) {
-			setErrorMessage(e.getMessage());
-		}
+//		try {
+//			System.out.print("!!! ===" + configuration.getAttribute("field1", "default"));
+//		} catch (CoreException e) {
+//			setErrorMessage(e.getMessage());
+//		}
 	}
 
 	@Override
@@ -97,8 +104,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		} catch (CoreException e) {
 			setLaunchConfigurations(new ArrayList<ILaunchConfiguration>());
 		}		
-		refreshTree();
-		updateLaunchConfigurationDialog();
+		refreshTree();		
 		try {
 			configuration.getWorkingCopy().setAttribute("field1", "value1");
 		} catch (CoreException e) {
@@ -108,12 +114,12 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute("field1", "value1"); 
-		try {
-			configuration.doSave();
-		} catch (CoreException e) {
-			setErrorMessage(e.getMessage());
-		}
+//		configuration.setAttribute("field1", "value1"); 
+//		try {
+//			configuration.doSave();
+//		} catch (CoreException e) {
+//			setErrorMessage(e.getMessage());
+//		}
 	}
 
 	@Override
