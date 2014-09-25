@@ -9,6 +9,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
 
 public class Utils {
 	
@@ -35,4 +36,17 @@ public class Utils {
 		ILaunchConfiguration[] list = launchManager.getLaunchConfigurations();
 		return Arrays.asList(list);		
 	}	
+	
+	public static ILaunchConfiguration getLaunchConfigurationByName(String name) {		
+		try {
+			for (ILaunchConfiguration conf : getAllLaunchConfigurations()) {
+				if (conf.getName().equals(name)) {
+					return conf; 
+				}			
+			}
+		} catch (CoreException e) {
+			DebugUIPlugin.log(e);
+		}
+		return null;
+	}
 }

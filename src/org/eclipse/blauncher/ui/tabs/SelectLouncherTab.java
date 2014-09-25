@@ -1,15 +1,22 @@
 package org.eclipse.blauncher.ui.tabs;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.blauncher.ui.BlauncherConstants;
+
+//import org.eclipse.blauncher.ui.BlauncherConstants;
 import org.eclipse.blauncher.ui.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy; 
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.debug.ui.IDebugUIConstants;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -21,10 +28,11 @@ import org.eclipse.ui.PlatformUI;
 public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	
 	SelectLouncherTab () {
-		setHelpContextId(BlauncherConstants.LAUNCH_CONFIGURATION_DIALOG_COMMON_TAB);
+//		setHelpContextId(BlauncherConstants.LAUNCH_CONFIGURATION_DIALOG_COMMON_TAB);
 	}
 
 	private List<ILaunchConfiguration> launchConfigurations;	
+	private List<ILaunchConfiguration> selectedLaunchConfigurations;
 	private CheckboxTreeViewer checkboxTreeViewer;
 
 	@Override
@@ -49,11 +57,30 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 			public Object[] getElements(Object inputElement) {				
 				return getLaunchConfigurations().toArray();
 			}});		
-		SimpleTreeLabelProvider labelProvider = new SimpleTreeLabelProvider();
-		checkboxTreeViewer.setLabelProvider(labelProvider);
+		checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {			
+			@Override
+			public void checkStateChanged(CheckStateChangedEvent event) {
+				ILaunchConfiguration configuration = (ILaunchConfiguration)event.getElement();
+				updateSelectedLaunchConfigurations(configuration, event.getChecked());
+				updateLaunchConfigurationDialog();
+			}
+		});
+		checkboxTreeViewer.setCheckStateProvider(new ICheckStateProvider(){
+			@Override
+			public boolean isChecked(Object element) {
+				// TODO Auto-generated method stub
+				return getSelectedLaunchConfigurations().contains(element);
+			}
+			@Override
+			public boolean isGrayed(Object element) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
+		checkboxTreeViewer.setLabelProvider(new SimpleTreeLabelProvider());
 		checkboxTreeViewer.setInput("root");	
 	}
-	
+
 	public void refreshTree() {
 		checkboxTreeViewer.refresh();
 	}
@@ -86,15 +113,11 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		composite.setLayoutData(data);		
 
 		return composite;
-	}		
+	}
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {        
-//		try {
-//			System.out.print("!!! ===" + configuration.getAttribute("field1", "default"));
-//		} catch (CoreException e) {
-//			setErrorMessage(e.getMessage());
-//		}
+		configuration.setContainer(null);
 	}
 
 	@Override
@@ -103,24 +126,61 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 			setLaunchConfigurations(Utils.getAvailableToRunLaunchConfigurations(configuration));
 		} catch (CoreException e) {
 			setLaunchConfigurations(new ArrayList<ILaunchConfiguration>());
-		}		
-		refreshTree();		
-		try {
-			configuration.getWorkingCopy().setAttribute("field1", "value1");
-		} catch (CoreException e) {
-			setErrorMessage(e.getMessage());
-		}
+		}			
+		updateSelectedConfigurationsFromConfig(configuration);	
+		refreshTree();	
 	}
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-//		configuration.setAttribute("field1", "value1"); 
-//		try {
-//			configuration.doSave();
-//		} catch (CoreException e) {
-//			setErrorMessage(e.getMessage());
-//		}
+		updateConfigFromSelectedConfigurations(configuration);
 	}
+	
+	private void updateConfigFromSelectedConfigurations(ILaunchConfigurationWorkingCopy configuration) {
+		List<ILaunchConfiguration> configurations = getSelectedLaunchConfigurations();
+		if (configurations != null && configurations.size() > 0) {
+			List<String> names = new ArrayList<>();
+			for (ILaunchConfiguration iLaunchConfiguration: configurations) {
+				names.add(iLaunchConfiguration.getName());				
+			}
+			configuration.setAttribute("selected_configuration", names);
+		}
+	}
+	
+	private void updateSelectedConfigurationsFromConfig(ILaunchConfiguration configuration) {
+		try {
+			List<String> selectedNames = configuration.getAttribute("selected_configuration", new ArrayList<>());
+			List<ILaunchConfiguration> selectedConfigurations = new ArrayList<ILaunchConfiguration>();
+			List<String> notFounded = new ArrayList<>(); 
+			if (selectedNames.size() > 0) {
+				Iterator<String> i = selectedNames.iterator();
+				while (i.hasNext()) {
+					String name = i.next(); // must be called before you can call i.remove()
+					ILaunchConfiguration foundConfiguration = Utils.getLaunchConfigurationByName(name);
+					if (foundConfiguration == null) {
+						notFounded.add(name);	
+					} else {
+						selectedConfigurations.add(foundConfiguration);
+					}
+				}
+			}
+			setSelectedLaunchConfigurations(selectedConfigurations);
+			if (notFounded.size() > 0) {
+				StringBuilder names = new StringBuilder();
+				for (String name: notFounded) {
+					if (names.length() > 0) {
+						names.append(", ");	
+					}
+					names.append(name);				
+				}
+				setErrorMessage(String.format("Not found configuartions with names: ", names));
+				//updateConfigFromSelectedConfigurations(configuration.getWorkingCopy());
+				//updateLaunchConfigurationDialog();
+			}
+		} catch (CoreException e) {
+			DebugUIPlugin.log(e);
+		}
+	}	
 
 	@Override
 	public String getName() {
@@ -145,5 +205,51 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	public void setLaunchConfigurations(List<ILaunchConfiguration> launchConfigurations) {
 		this.launchConfigurations = launchConfigurations;
 	}
+	
+	
+	public List<ILaunchConfiguration> getSelectedLaunchConfigurations() {
+		if (selectedLaunchConfigurations == null) {
+			selectedLaunchConfigurations = new ArrayList<ILaunchConfiguration>();
+		}
+		return selectedLaunchConfigurations;
+	}
 
+	public void setSelectedLaunchConfigurations(List<ILaunchConfiguration> selectedLaunchConfigurations) {
+		this.selectedLaunchConfigurations = selectedLaunchConfigurations;
+	}	
+
+	
+	/**
+	 * Change list of launch configurations selected in tree 
+	 * @param configuration
+	 * @param addNew
+	 * @return
+	 */
+	public List<ILaunchConfiguration> updateSelectedLaunchConfigurations(ILaunchConfiguration configuration, boolean addNew) {
+		if (addNew) {
+			for(ILaunchConfiguration entry : selectedLaunchConfigurations) {
+				if (entry.equals(configuration)) {
+					setErrorMessage("Selected configurations list allready contains this configuration");
+					return selectedLaunchConfigurations;
+				}
+			}
+			selectedLaunchConfigurations.add(configuration);
+		} else {
+			boolean isDeleted = false;
+			Iterator<ILaunchConfiguration> i = selectedLaunchConfigurations.iterator();
+			while (i.hasNext()) {
+				ILaunchConfiguration entry = i.next(); // must be called before you can call i.remove()
+				if (entry.equals(configuration)) {
+					i.remove();
+					isDeleted = true;
+					break;
+				} 			   
+			}
+			if (!isDeleted) {
+				setErrorMessage("Selected list allready does not contain this configuration");
+			}
+		}
+		return selectedLaunchConfigurations;
+	}		
+	
 }
