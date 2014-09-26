@@ -49,15 +49,15 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	private List<ILaunchConfiguration> selectedLaunchConfigurations;  //selected in tree	
 	private List<String> storedNamesOfselectedConfigurations;         //stored 
 	private CheckboxTreeViewer checkboxTreeViewer;
-	private Composite fixTreeSection;
+	private Button fixTreeButton;
+	private Label treeLabel;
 	private Composite treeSection;
 
 	@Override
 	public void createControl(Composite parent) {						
 		Composite composite = createDefaultComposite(parent);
         setControl(composite);	
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), getHelpContextId());
-		createFixComponent(composite);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), getHelpContextId());		
 		addFirstSection(composite);
 		addSeparator(composite);
 		addTree(composite);		
@@ -67,12 +67,16 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		checkboxTreeViewer.refresh();
 	}
 	
-	private void createFixComponent(Composite parent) {		
-		fixTreeSection = createDefaultSection(parent);
+	private void deleteMissedConfigurations() {
+		storedNamesOfselectedConfigurations = new ArrayList<>();
+	}
+	
+	private void addFirstSection(Composite parent) {
+		Composite fixTreeSection = createDefaultSection(parent);
 		Composite composite = SWTFactory.createComposite(fixTreeSection, parent.getFont(), 2, 2, 
 				GridData.FILL_BOTH, 0, 0);		
-		Label pathLabel = SWTFactory.createLabel(composite, Messages.DeleteDead, 1);
-		Button fixTreeButton = createPushButton(composite, Messages.Purge, null);
+		treeLabel = SWTFactory.createLabel(composite, Messages.ChooseConfigurationsLabel, 1);
+		fixTreeButton = createPushButton(composite, Messages.Purge, null);
 		fixTreeButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
 				deleteMissedConfigurations();
@@ -80,18 +84,6 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 				updateLaunchConfigurationDialog();
 			}
 		});	
-	}
-	
-	private void deleteMissedConfigurations() {
-		storedNamesOfselectedConfigurations = new ArrayList<>();
-	}
-	
-	private void addFirstSection(Composite parent) {
-		Composite composite = createDefaultSection(parent);
-		Label pathLabel = new Label(composite, GridData.FILL_HORIZONTAL);	    
-		//Label for path field		
-		pathLabel.setText(Messages.ChooseConfigurationsLabel);
-
 	}
 
 	private void addSeparator(Composite parent) {
@@ -213,10 +205,10 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	}
 	
 	private void updateEnableState() {
-		boolean isValid = checkStoredAndAvailableConfigurations();
-		fixTreeSection.setEnabled(!isValid);
-		fixTreeSection.setVisible(!isValid);
+		boolean isValid = checkStoredAndAvailableConfigurations();		
+		fixTreeButton.setVisible(!isValid);
 		treeSection.setEnabled(isValid);
+		treeLabel.setText(isValid ? Messages.ChooseConfigurationsLabel : Messages.DeleteDead);	
 	}
 	
 	private void updateConfigFromSelectedConfigurations(ILaunchConfigurationWorkingCopy configuration) {
