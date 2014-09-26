@@ -3,7 +3,6 @@ package org.eclipse.blauncher.ui.tabs;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.debug.core.ILaunchConfiguration;
 
 public class SimpleTreeLabelProvider implements ILabelProvider {
 
@@ -40,8 +39,8 @@ public class SimpleTreeLabelProvider implements ILabelProvider {
 	@Override
 	public String getText(Object element) {
 	    // Get the name of the file
-		ILaunchConfiguration configuration = ((ILaunchConfiguration) element);
-	    return configuration.getName();
+		ConfigurationTreeEntry entry = ((ConfigurationTreeEntry) element);
+	    return entry.getName();
 	}
 	
 } 
