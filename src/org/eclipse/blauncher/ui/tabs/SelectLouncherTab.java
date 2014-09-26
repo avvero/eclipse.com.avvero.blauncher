@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.eclipse.blauncher.ui.IBlauncherUIConstants.SELECTED_CONFIGURATIONS;
 
+import org.eclipse.blauncher.ui.Messages;
 //import org.eclipse.blauncher.ui.BlauncherConstants;
 import org.eclipse.blauncher.ui.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -12,7 +14,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy; 
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -24,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
+
 
 public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	
@@ -89,7 +91,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		Composite composite = createDefaultComposite(parent);
 		//Label for path field
 		Label pathLabel = new Label(composite, SWT.NONE);
-		pathLabel.setText("Choose configurations to launch in bunch");
+		pathLabel.setText(Messages.ChooseConfigurationsLabel);
 
 	}
 
@@ -143,13 +145,14 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 			for (ILaunchConfiguration iLaunchConfiguration: configurations) {
 				names.add(iLaunchConfiguration.getName());				
 			}
-			configuration.setAttribute("selected_configuration", names);
+			configuration.setAttribute(SELECTED_CONFIGURATIONS, names);
 		}
 	}
 	
 	private void updateSelectedConfigurationsFromConfig(ILaunchConfiguration configuration) {
 		try {
-			List<String> selectedNames = configuration.getAttribute("selected_configuration", new ArrayList<>());
+			List<String> selectedNames = configuration.getAttribute(SELECTED_CONFIGURATIONS, 
+					new ArrayList<>());
 			List<ILaunchConfiguration> selectedConfigurations = new ArrayList<ILaunchConfiguration>();
 			List<String> notFounded = new ArrayList<>(); 
 			if (selectedNames.size() > 0) {
@@ -173,7 +176,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 					}
 					names.append(name);				
 				}
-				setErrorMessage(String.format("Not found configuartions with names: ", names));
+				setErrorMessage(String.format(Messages.NotFoundConfiguartions, names));
 				//updateConfigFromSelectedConfigurations(configuration.getWorkingCopy());
 				//updateLaunchConfigurationDialog();
 			}
@@ -184,14 +187,43 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return "Launchers";
+		return Messages.SelectedConfigurationTabName;
 	}
 	
 	@Override
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 		setErrorMessage(null);
-		setMessage(null);
+		try {
+			List<String> selectedNames = launchConfig.getAttribute(SELECTED_CONFIGURATIONS, 
+					new ArrayList<>());
+			List<ILaunchConfiguration> selectedConfigurations = new ArrayList<ILaunchConfiguration>();
+			List<String> notFounded = new ArrayList<>(); 
+			if (selectedNames.size() > 0) {
+				Iterator<String> i = selectedNames.iterator();
+				while (i.hasNext()) {
+					String name = i.next(); // must be called before you can call i.remove()
+					ILaunchConfiguration foundConfiguration = Utils.getLaunchConfigurationByName(name);
+					if (foundConfiguration == null) {
+						notFounded.add(name);	
+					} else {
+						selectedConfigurations.add(foundConfiguration);
+					}
+				}
+			}
+			if (notFounded.size() > 0) {
+				StringBuilder names = new StringBuilder();
+				for (String name: notFounded) {
+					if (names.length() > 0) {
+						names.append(", ");	
+					}
+					names.append(name);				
+				}
+				setErrorMessage(String.format(Messages.NotFoundConfiguartions, names));
+				return true;
+			}
+		} catch (CoreException e) {
+			DebugUIPlugin.log(e);
+		}
 		return true;
 	}	
 	
@@ -229,7 +261,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		if (addNew) {
 			for(ILaunchConfiguration entry : selectedLaunchConfigurations) {
 				if (entry.equals(configuration)) {
-					setErrorMessage("Selected configurations list allready contains this configuration");
+					setErrorMessage(Messages.SelectedConfigurationsError1);
 					return selectedLaunchConfigurations;
 				}
 			}
@@ -246,7 +278,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 				} 			   
 			}
 			if (!isDeleted) {
-				setErrorMessage("Selected list allready does not contain this configuration");
+				setErrorMessage(Messages.SelectedConfigurationsError2);
 			}
 		}
 		return selectedLaunchConfigurations;
