@@ -2,6 +2,11 @@ package org.eclipse.blauncher.ui.tabs;
 
 import org.eclipse.debug.core.ILaunchConfiguration;
 
+/**
+ * Entry - element of tree, wrap for ILaunchConfiguration
+ * @author fxdev-belyaev-ay
+ *
+ */
 public class ConfigurationTreeEntry {
 	
 	private ILaunchConfiguration configuration;

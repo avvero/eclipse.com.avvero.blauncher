@@ -6,6 +6,7 @@ import java.util.List;
 
 import static org.eclipse.blauncher.ui.IBlauncherUIConstants.SELECTED_CONFIGURATIONS;
 
+import org.eclipse.blauncher.ui.IBlauncherUIConstants;
 import org.eclipse.blauncher.ui.Messages;
 //import org.eclipse.blauncher.ui.BlauncherConstants;
 import org.eclipse.blauncher.ui.Utils;
@@ -14,23 +15,18 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy; 
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.SWTFactory;
-import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationsMessages;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.accessibility.AccessibleAdapter;
-import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
@@ -39,10 +35,11 @@ import org.eclipse.ui.PlatformUI;
 public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	
 	/**
+	 * Tab for configuration selection
 	 * @wbp.parser.entryPoint
 	 */
 	SelectLouncherTab () {
-//		setHelpContextId(BlauncherConstants.LAUNCH_CONFIGURATION_DIALOG_COMMON_TAB);
+		setHelpContextId(IBlauncherUIConstants.SELECTE_CONFIGURATION_TAB);
 	}
 
 	private List<ILaunchConfiguration> availableLaunchConfigurations; //available to select
@@ -63,14 +60,10 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		addTree(composite);		
 	}
 
-	public void refreshTree() {
-		checkboxTreeViewer.refresh();
-	}
-	
-	private void deleteMissedConfigurations() {
-		storedNamesOfselectedConfigurations = new ArrayList<>();
-	}
-	
+	/**
+	 * Control part creation
+	 * @param parent
+	 */
 	private void addFirstSection(Composite parent) {
 		Composite fixTreeSection = createDefaultSection(parent);
 		Composite composite = SWTFactory.createComposite(fixTreeSection, parent.getFont(), 2, 2, 
@@ -85,6 +78,33 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 			}
 		});	
 	}
+	
+	private Composite createDefaultSection(Composite parent) {
+		Composite composite = new Composite(parent, SWT.NULL);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		composite.setLayout(layout);
+
+		GridData data = new GridData();
+		data.verticalAlignment = GridData.FILL;
+		data.horizontalAlignment = GridData.FILL;
+		composite.setLayoutData(data);		
+
+		return composite;
+	}
+		
+	private Composite createDefaultComposite(Composite parent) {
+		Composite tt = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		tt.setLayout(layout);
+		GridData data = new GridData(GridData.FILL);
+		data.grabExcessHorizontalSpace = true;
+		data.grabExcessVerticalSpace = true;
+		data.verticalAlignment = GridData.FILL;
+		data.horizontalAlignment = GridData.FILL;
+		tt.setLayoutData(data);
+		return tt;
+	}		
 
 	private void addSeparator(Composite parent) {
 		Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -129,6 +149,10 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		checkboxTreeViewer.setInput("root");			
 	}
 	
+	public void refreshTree() {
+		checkboxTreeViewer.refresh();
+	}	
+	
 	/**
 	 * Get all configurations for tree (include deleted)
 	 * @return
@@ -150,33 +174,6 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		}
 		return result;
 	}
-
-	private Composite createDefaultSection(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		composite.setLayout(layout);
-
-		GridData data = new GridData();
-		data.verticalAlignment = GridData.FILL;
-		data.horizontalAlignment = GridData.FILL;
-		composite.setLayoutData(data);		
-
-		return composite;
-	}
-		
-	private Composite createDefaultComposite(Composite parent) {
-		Composite tt = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		tt.setLayout(layout);
-		GridData data = new GridData(GridData.FILL);
-		data.grabExcessHorizontalSpace = true;
-		data.grabExcessVerticalSpace = true;
-		data.verticalAlignment = GridData.FILL;
-		data.horizontalAlignment = GridData.FILL;
-		tt.setLayoutData(data);
-		return tt;
-	}	
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {        
@@ -256,9 +253,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		return isValid;	
 	}	
 	
-	/**
-	 * @see ILaunchConfigurationTab#canSave()
-	 */
+	@Override
 	public boolean canSave() {
 		boolean isValid = checkStoredAndAvailableConfigurations();
 		return isValid;	
@@ -285,7 +280,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		if (selectedNames.size() > 0) {
 			Iterator<String> i = selectedNames.iterator();
 			while (i.hasNext()) {
-				String name = i.next(); // must be called before you can call i.remove()
+				String name = i.next(); 
 				ILaunchConfiguration foundConfiguration = Utils.getLaunchConfigurationByName(name);
 				if (foundConfiguration == null) {
 					notFounded.add(name);	
@@ -373,6 +368,10 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 			selectedNames = new ArrayList<>();
 		}
 		setStoredNamesOfselectedConfigurations(selectedNames);
-	}		
+	}	
+	
+	private void deleteMissedConfigurations() {
+		storedNamesOfselectedConfigurations = new ArrayList<>();
+	}	
 	
 }
