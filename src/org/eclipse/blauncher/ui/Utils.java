@@ -126,9 +126,28 @@ public class Utils {
 	 * @return true if configuration valid 
 	 */
 	public static boolean isConfigurationValid(ILaunchConfiguration launchConfig) {
+		return isAllStoredExists(launchConfig) && isConfigurationsSelected(launchConfig);
+	}
+	
+	/**
+	 * Check is configuration has no STORED_AND_LOST configurations
+	 * @param launchConfig the configuration to check
+	 * @return true if condition is satisfied
+	 */
+	public static boolean isAllStoredExists(ILaunchConfiguration launchConfig) {		
 		List<String> storedNames = getNamesOfStoredConfigurations(launchConfig);
 		List<String> lostNames = getStoredButLostConfigurationsNames(storedNames);
 		return lostNames.size() == 0;
+	}
+	
+	/**
+	 * Check is configuration contains STORED_TO_LAUNCH configurations
+	 * @param launchConfig the configuration to check
+	 * @return true if condition is satisfied
+	 */
+	public static boolean isConfigurationsSelected(ILaunchConfiguration launchConfig) {
+		List<ILaunchConfiguration> list = getStoredConfigurations(launchConfig);
+		return list.size() != 0;
 	}
 
 	/**

@@ -3,7 +3,7 @@ package org.eclipse.blauncher.ui.tabs;
 import org.eclipse.debug.core.ILaunchConfiguration;
 
 /**
- * Entry - element of tree, wraper for ILaunchConfiguration
+ * Entry element of tree, wraper for ILaunchConfiguration
  * @author belyaev-ay
  *
  */

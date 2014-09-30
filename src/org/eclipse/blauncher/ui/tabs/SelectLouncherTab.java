@@ -32,6 +32,11 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 
 
+/**
+ * Controller for configuration selection
+ * @author belyaev-ay
+ *
+ */
 public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	
 	/**
@@ -233,25 +238,32 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 		setErrorMessage(null);
-		boolean isValid = isAllStoredExists();
-		if (!isValid) {
+		boolean isAllStoredExists = isAllStoredExists();
+		boolean isConfigurationsSelected = isConfigurationsSelected();
+		if (!isAllStoredExists) {
 			setErrorMessage(Messages.NotFoundConfiguartions);
 			try {
 				updateConfigFromSelectedConfigurations(launchConfig.getWorkingCopy());
 			} catch (CoreException e) {DebugUIPlugin.log(e);}
+		} else if (!isConfigurationsSelected) {
+			setErrorMessage(Messages.ConfiguartionsNotSelected);
 		}
-		return isValid;	
+		return isAllStoredExists && isConfigurationsSelected;	
 	}	
 	
 	@Override
 	public boolean canSave() {
-		boolean isValid = isAllStoredExists();
+		boolean isValid = isAllStoredExists() && isConfigurationsSelected();
 		return isValid;	
 	}
 	
 	private boolean isAllStoredExists() {		
 		List<String> lostNames = getStoredButLostConfigurationsNames(); 
 		return lostNames.size() == 0;
+	}
+	
+	private boolean isConfigurationsSelected() {
+		return getSelectedLaunchConfigurations().size() !=0;
 	}
 
 	private List<String> getStoredButLostConfigurationsNames() {

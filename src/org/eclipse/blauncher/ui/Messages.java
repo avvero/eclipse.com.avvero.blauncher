@@ -11,6 +11,7 @@ public class Messages extends NLS {
 	public static String SelectedConfigurationsError2;
 	public static String DeleteDead;
 	public static String Purge;
+	public static String  ConfiguartionsNotSelected;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
