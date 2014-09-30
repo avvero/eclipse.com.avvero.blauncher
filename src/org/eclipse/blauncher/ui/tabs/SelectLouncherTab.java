@@ -163,11 +163,11 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		for (ILaunchConfiguration configuration : availableLaunchConfigurations) {
 			result.add(new ConfigurationTreeEntry(configuration, configuration.getName(), true));	
 		}	
-		boolean isValid = checkStoredAndAvailableConfigurations();
+		boolean isValid = isSomeStoredLost();
 		if (!isValid) {
-			List<String> excluded = getExcludedConfigurationsNames(); 
-			if (excluded.size() > 0) {
-				for (String name: excluded) {
+			List<String> lostConfigurationsNames  = getStoredButLostConfigurationsNames(); 
+			if (lostConfigurationsNames.size() > 0) {
+				for (String name: lostConfigurationsNames) {
 					result.add(new ConfigurationTreeEntry(null, name, false));				
 				}				
 			}
@@ -187,7 +187,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		} catch (CoreException e) {
 			setAvailableLaunchConfigurations(new ArrayList<ILaunchConfiguration>());
 		}			
-		setStoredNamesOfselectedConfigurations(configuration);
+		setStoredNamesOfselectedConfigurations(Utils.getNamesOfStoredConfigurations(configuration));
 		updateSelectedConfigurationsFromConfig(configuration);		
 		refreshTree();
 		updateEnableState();
@@ -202,7 +202,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	}
 	
 	private void updateEnableState() {
-		boolean isValid = checkStoredAndAvailableConfigurations();		
+		boolean isValid = isSomeStoredLost();		
 		fixTreeButton.setVisible(!isValid);
 		treeSection.setEnabled(isValid);
 		treeLabel.setText(isValid ? Messages.ChooseConfigurationsLabel : Messages.DeleteDead);	
@@ -220,19 +220,9 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	}
 	
 	private void updateSelectedConfigurationsFromConfig(ILaunchConfiguration configuration) {
-		List<String> selectedNames = getStoredNamesOfselectedConfigurations();
-		List<ILaunchConfiguration> selectedConfigurations = new ArrayList<ILaunchConfiguration>();		
-		if (selectedNames.size() > 0) {
-			Iterator<String> i = selectedNames.iterator();
-			while (i.hasNext()) {
-				String name = i.next(); // must be called before you can call i.remove()
-				ILaunchConfiguration foundConfiguration = Utils.getLaunchConfigurationByName(name);
-				if (foundConfiguration != null) {
-					selectedConfigurations.add(foundConfiguration);
-				}
-			}
-		}
-		setSelectedLaunchConfigurations(selectedConfigurations);
+		List<String> storedNames = getStoredNamesOfselectedConfigurations();
+		List<ILaunchConfiguration> storedConfigurations = Utils.getStoredConfigurations(storedNames);		
+		setSelectedLaunchConfigurations(storedConfigurations);
 	}	
 
 	@Override
@@ -243,7 +233,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 		setErrorMessage(null);
-		boolean isValid = checkStoredAndAvailableConfigurations();
+		boolean isValid = isSomeStoredLost();
 		if (!isValid) {
 			setErrorMessage(Messages.NotFoundConfiguartions);
 			try {
@@ -255,40 +245,20 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	
 	@Override
 	public boolean canSave() {
-		boolean isValid = checkStoredAndAvailableConfigurations();
+		boolean isValid = isSomeStoredLost();
 		return isValid;	
 	}
 	
-	private boolean checkStoredAndAvailableConfigurations() {		
-		List<String> notFounded = getExcludedConfigurationsNames(); 
-		if (notFounded.size() > 0) {
-			StringBuilder names = new StringBuilder();
-			for (String name: notFounded) {
-				if (names.length() > 0) {
-					names.append(", ");	
-				}
-				names.append(name);				
-			}
-			return false;
-		}
-		return true;
+	private boolean isSomeStoredLost() {		
+		List<String> lostNames = getStoredButLostConfigurationsNames(); 
+		return Utils.isSomeStoredLost(lostNames);
 	}
-	
-	private List<String> getExcludedConfigurationsNames() {
-		List<String> selectedNames = getStoredNamesOfselectedConfigurations();			
-		List<String> notFounded = new ArrayList<>(); 
-		if (selectedNames.size() > 0) {
-			Iterator<String> i = selectedNames.iterator();
-			while (i.hasNext()) {
-				String name = i.next(); 
-				ILaunchConfiguration foundConfiguration = Utils.getLaunchConfigurationByName(name);
-				if (foundConfiguration == null) {
-					notFounded.add(name);	
-				}
-			}
-		}
-		return notFounded;
+
+	private List<String> getStoredButLostConfigurationsNames() {
+		List<String> storedNames = getStoredNamesOfselectedConfigurations();
+		return Utils.getStoredButLostConfigurationsNames(storedNames); 
 	}
+
 	
 	public List<ILaunchConfiguration> getAvailableLaunchConfigurations() {
 		if (availableLaunchConfigurations == null) {
@@ -315,7 +285,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 
 	
 	/**
-	 * Change list of launch configurations selected in tree 
+	 * Changes list of launch configurations selected in tree 
 	 * @param configuration
 	 * @param addNew
 	 * @return
@@ -347,28 +317,20 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		return selectedLaunchConfigurations;
 	}
 
+	/**
+	 * Names of configurations that had been stored for launch by this configuration 
+	 * @return
+	 */
 	public List<String> getStoredNamesOfselectedConfigurations() {
 		if (storedNamesOfselectedConfigurations == null) {
 			storedNamesOfselectedConfigurations = new ArrayList<>();
 		}
 		return storedNamesOfselectedConfigurations;
 	}
-
+	
 	public void setStoredNamesOfselectedConfigurations(List<String> storedNamesOfselectedConfigurations) {
 		this.storedNamesOfselectedConfigurations = storedNamesOfselectedConfigurations;
-	}	
-	
-	public void setStoredNamesOfselectedConfigurations(ILaunchConfiguration launchConfig) {
-		List<String> selectedNames;
-		try {
-			selectedNames = launchConfig.getAttribute(SELECTED_CONFIGURATIONS, 
-					new ArrayList<>());
-		} catch (CoreException e) {
-			DebugUIPlugin.log(e);
-			selectedNames = new ArrayList<>();
-		}
-		setStoredNamesOfselectedConfigurations(selectedNames);
-	}	
+	}		
 	
 	private void deleteMissedConfigurations() {
 		storedNamesOfselectedConfigurations = new ArrayList<>();
