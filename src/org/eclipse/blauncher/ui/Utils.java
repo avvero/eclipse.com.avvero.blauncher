@@ -13,133 +13,156 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 
+/**
+ * Useful methods
+ * 
+ * @author belyaev-ay
+ * 
+ */
 public class Utils {
-	
+
 	/**
-	 * Get all configurations available for launch by THIS configuration (i.e. all configurations 
-	 * without currentLaunchConfiguration) 
-	 * @param currentLaunchConfiguration - instance of ILaunchConfiguration
-	 * @return list of configurations 
+	 * Get all configurations available for launch by configuration currentLaunchConfiguration (i.e.
+	 * all configurations without currentLaunchConfiguration)
+	 * 
+	 * @param the instance of ILaunchConfiguration
+	 * @return the list of configurations
 	 * @throws CoreException
 	 */
-	public static List<ILaunchConfiguration> getAvailableToRunLaunchConfigurations(ILaunchConfiguration currentLaunchConfiguration) 
+	public static List<ILaunchConfiguration> getAvailableToRunLaunchConfigurations(
+			ILaunchConfiguration currentLaunchConfiguration)
 			throws CoreException {
 		List<ILaunchConfiguration> result = new ArrayList<ILaunchConfiguration>();
-		ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
-		//TODO check MODE!!!!
+		ILaunchManager launchManager = DebugPlugin.getDefault()
+				.getLaunchManager();
 		ILaunchConfiguration[] list = launchManager.getLaunchConfigurations();
 		for (ILaunchConfiguration conf : list) {
 			if (!conf.getName().equals(currentLaunchConfiguration.getName())) {
 				result.add(conf);
-			}			
+			}
 		}
-		return result;		
+		return result;
 	}
-	
+
 	/**
 	 * Get all configurations from launchManager
-	 * @return list of configurations
+	 * 
+	 * @return the list of configurations
 	 * @throws CoreException
 	 */
-	public static List<ILaunchConfiguration> getAllLaunchConfigurations() throws CoreException {		
-		ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+	public static List<ILaunchConfiguration> getAllLaunchConfigurations()
+			throws CoreException {
+		ILaunchManager launchManager = DebugPlugin.getDefault()
+				.getLaunchManager();
 		ILaunchConfiguration[] list = launchManager.getLaunchConfigurations();
-		return Arrays.asList(list);		
-	}	
-	
+		return Arrays.asList(list);
+	}
+
 	/**
 	 * Get configuration by name
-	 * @param name
-	 * @return configuration with name 
+	 * 
+	 * @param name the name of configuration
+	 * @return the configuration with <code>name</code>
 	 */
-	public static ILaunchConfiguration getLaunchConfigurationByName(String name) {		
+	public static ILaunchConfiguration getLaunchConfigurationByName(String name) {
 		try {
 			for (ILaunchConfiguration conf : getAllLaunchConfigurations()) {
 				if (conf.getName().equals(name)) {
-					return conf; 
-				}			
+					return conf;
+				}
 			}
 		} catch (CoreException e) {
 			DebugUIPlugin.log(e);
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Names of configurations that had been stored for launch by this configuration 
-	 * @param launchConfig
-	 * @return
+	 * Names of configurations that had been chosen to launch by <code>launchConfig</code>
+	 * 
+	 * @param launchConfig the instance of ILaunchConfiguration
+	 * @return the list of names of configurations 
 	 */
-	public static List<String> getNamesOfStoredConfigurations(ILaunchConfiguration launchConfig) {
+	public static List<String> getNamesOfStoredConfigurations(
+			ILaunchConfiguration launchConfig) {
 		List<String> selectedNames;
 		try {
-			selectedNames = launchConfig.getAttribute(SELECTED_CONFIGURATIONS, new ArrayList<>());
+			selectedNames = launchConfig.getAttribute(SELECTED_CONFIGURATIONS,
+					new ArrayList<>());
 		} catch (CoreException e) {
 			DebugUIPlugin.log(e);
 			selectedNames = new ArrayList<>();
-		}		
+		}
 		return selectedNames;
-	}	
-	
+	}
+
 	/**
-	 * 
-	 * @param storedNames
-	 * @return
+	 * Return names of configurations which had been chosen to launch <code>by this configuration</code>
+	 * but had been lost for any reasons  
+	 *
+	 * @param storedNames the list of configuration names
+	 * @return the list of names
 	 */
-	public static List<String> getStoredButLostConfigurationsNames(List<String> storedNames) {		
-		List<String> lostNames = new ArrayList<>(); 
+	public static List<String> getStoredButLostConfigurationsNames(
+			List<String> storedNames) {
+		List<String> lostNames = new ArrayList<>();
 		if (storedNames.size() > 0) {
 			Iterator<String> i = storedNames.iterator();
 			while (i.hasNext()) {
-				String name = i.next(); 
-				ILaunchConfiguration foundConfiguration = Utils.getLaunchConfigurationByName(name);
+				String name = i.next();
+				ILaunchConfiguration foundConfiguration = Utils
+						.getLaunchConfigurationByName(name);
 				if (foundConfiguration == null) {
-					lostNames.add(name);	
+					lostNames.add(name);
 				}
 			}
 		}
 		return lostNames;
-	}		
-	
-	
-	public static boolean isSomeStoredLost(List<String> lostNames) {		
-		if (lostNames.size() > 0) {
-			StringBuilder names = new StringBuilder();
-			for (String name: lostNames) {
-				if (names.length() > 0) {
-					names.append(", ");	
-				}
-				names.append(name);				
-			}
-			return false;
-		}
-		return true;
 	}
-	
+
+	/**
+	 * Check is configuration valid (has no STORED_AND_LOST configurations)
+	 * @param launchConfig the configuration to check
+	 * @return true if configuration valid 
+	 */
 	public static boolean isConfigurationValid(ILaunchConfiguration launchConfig) {
-		List<String> storedNames = getNamesOfStoredConfigurations(launchConfig); 
-		List<String> lostNames = getStoredButLostConfigurationsNames(storedNames);		
-		return isSomeStoredLost(lostNames);
+		List<String> storedNames = getNamesOfStoredConfigurations(launchConfig);
+		List<String> lostNames = getStoredButLostConfigurationsNames(storedNames);
+		return lostNames.size() == 0;
 	}
-	
-	public static List<ILaunchConfiguration> getStoredConfigurations(ILaunchConfiguration launchConfig) {
+
+	/**
+	 * Returns configurations that had been chosen to launch by <code>launchConfig</code> 
+	 * @param launchConfig the instance of ILaunchConfiguration 
+	 * @return the list of configurations
+	 */
+	public static List<ILaunchConfiguration> getStoredConfigurations(
+			ILaunchConfiguration launchConfig) {
 		List<String> storedNames = getNamesOfStoredConfigurations(launchConfig);
 		return getStoredConfigurations(storedNames);
 	}
-	
-	public static List<ILaunchConfiguration> getStoredConfigurations(List<String> storedNames) {		
-		List<ILaunchConfiguration> storedConfigurations = new ArrayList<ILaunchConfiguration>();		
+
+	/**
+	 * Returns configurations by their names 
+	 * @param storedNames the names of configurations  
+	 * @return the list of configurations
+	 */
+	public static List<ILaunchConfiguration> getStoredConfigurations(
+			List<String> storedNames) {
+		List<ILaunchConfiguration> storedConfigurations = new ArrayList<ILaunchConfiguration>();
 		if (storedNames.size() > 0) {
 			Iterator<String> i = storedNames.iterator();
 			while (i.hasNext()) {
-				String name = i.next(); // must be called before you can call i.remove()
-				ILaunchConfiguration foundConfiguration = Utils.getLaunchConfigurationByName(name);
+				String name = i.next(); // must be called before you can call
+										// i.remove()
+				ILaunchConfiguration foundConfiguration = Utils
+						.getLaunchConfigurationByName(name);
 				if (foundConfiguration != null) {
 					storedConfigurations.add(foundConfiguration);
 				}
 			}
 		}
 		return storedConfigurations;
-	}		
-		
+	}
+
 }

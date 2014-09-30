@@ -26,4 +26,7 @@
             type="org.eclipse.blauncher.ui.launchConfigurationType2">
       </launchConfigurationTabGroup>
    </extension>
+   <!-- org.eclipse.debug.ui.launchShortcuts will not be here, because it has no sense. 
+        This configuration is for launching other configuration, not for projects.
+        My vassal's vassal is not my vassal. -->   
 </plugin>

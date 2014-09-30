@@ -163,7 +163,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		for (ILaunchConfiguration configuration : availableLaunchConfigurations) {
 			result.add(new ConfigurationTreeEntry(configuration, configuration.getName(), true));	
 		}	
-		boolean isValid = isSomeStoredLost();
+		boolean isValid = isAllStoredExists();
 		if (!isValid) {
 			List<String> lostConfigurationsNames  = getStoredButLostConfigurationsNames(); 
 			if (lostConfigurationsNames.size() > 0) {
@@ -202,7 +202,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	}
 	
 	private void updateEnableState() {
-		boolean isValid = isSomeStoredLost();		
+		boolean isValid = isAllStoredExists();		
 		fixTreeButton.setVisible(!isValid);
 		treeSection.setEnabled(isValid);
 		treeLabel.setText(isValid ? Messages.ChooseConfigurationsLabel : Messages.DeleteDead);	
@@ -233,7 +233,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	@Override
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 		setErrorMessage(null);
-		boolean isValid = isSomeStoredLost();
+		boolean isValid = isAllStoredExists();
 		if (!isValid) {
 			setErrorMessage(Messages.NotFoundConfiguartions);
 			try {
@@ -245,13 +245,13 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 	
 	@Override
 	public boolean canSave() {
-		boolean isValid = isSomeStoredLost();
+		boolean isValid = isAllStoredExists();
 		return isValid;	
 	}
 	
-	private boolean isSomeStoredLost() {		
+	private boolean isAllStoredExists() {		
 		List<String> lostNames = getStoredButLostConfigurationsNames(); 
-		return Utils.isSomeStoredLost(lostNames);
+		return lostNames.size() == 0;
 	}
 
 	private List<String> getStoredButLostConfigurationsNames() {
