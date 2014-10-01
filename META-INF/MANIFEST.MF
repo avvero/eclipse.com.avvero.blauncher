@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: blauncher
+Bundle-Name: Bunch launcher
 Bundle-SymbolicName: org.eclipse.blauncher.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.blauncher.ui.Activator

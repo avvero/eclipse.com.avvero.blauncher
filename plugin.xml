@@ -5,7 +5,7 @@
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
             delegate="org.eclipse.blauncher.ui.LaunchDelegate"
-            id="org.eclipse.blauncher.ui.launchConfigurationType2"
+            id="org.eclipse.blauncher.ui.launchConfiguration"
             modes="run,debug"
             name="Bunch launcher">
       </launchConfigurationType>
@@ -13,7 +13,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            configTypeID="org.eclipse.blauncher.ui.launchConfigurationType2"
+            configTypeID="org.eclipse.blauncher.ui.launchConfiguration"
             icon="images/Rotate1.ico"
             id="org.eclipse.blauncher.ui.launchConfigurationTypeImage2">
       </launchConfigurationTypeImage>
@@ -23,7 +23,7 @@
       <launchConfigurationTabGroup
             class="org.eclipse.blauncher.ui.tabs.ConfigurationTabGroup"
             id="org.eclipse.blauncher.ui.launchConfigurationTabGroup1"
-            type="org.eclipse.blauncher.ui.launchConfigurationType2">
+            type="org.eclipse.blauncher.ui.launchConfiguration">
       </launchConfigurationTabGroup>
    </extension>
    <!-- org.eclipse.debug.ui.launchShortcuts will not be here, because it has no sense. 
