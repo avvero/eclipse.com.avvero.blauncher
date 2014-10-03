@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.blauncher.feature_1.0.0.201410031639.jar" id="org.eclipse.blauncher.feature" version="1.0.0.201410031639">
+   <feature url="features/org.eclipse.blauncher_1.0.0.201410031659.jar" id="org.eclipse.blauncher" version="1.0.0.201410031659">
       <category name="org.eclipse.blauncher"/>
    </feature>
    <category-def name="org.eclipse.blauncher" label="Bunch launcher">
