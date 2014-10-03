@@ -1,3 +1,3 @@
 org.eclipse.blauncher
 =====================
-The plugin allows you to run different launch configurations in eclipse
+This plugin allows you to run different launch configurations in eclipse
