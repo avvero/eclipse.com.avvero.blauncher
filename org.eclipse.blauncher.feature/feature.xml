@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.blauncher"
+      label="Bunch launcher"
+      version="1.0.0.qualifier">
+
+   <description url="https://github.com/avvero">
+      Launch configuration for launch other launch configurations. 
+launch launch launch
+   </description>
+
+   <license url="https://github.com/avvero">
+      Nobody reads license agreements
+   </license>
+
+   <plugin
+         id="org.eclipse.blauncher.help"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.blauncher.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
