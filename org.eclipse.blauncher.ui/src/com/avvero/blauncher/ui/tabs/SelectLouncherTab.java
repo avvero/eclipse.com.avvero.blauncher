@@ -1,15 +1,12 @@
-package org.eclipse.blauncher.ui.tabs;
+package com.avvero.blauncher.ui.tabs;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.eclipse.blauncher.ui.IBlauncherUIConstants.SELECTED_CONFIGURATIONS;
+import static com.avvero.blauncher.ui.IBlauncherUIConstants.SELECTED_CONFIGURATIONS;
 
-import org.eclipse.blauncher.ui.IBlauncherUIConstants;
-import org.eclipse.blauncher.ui.Messages;
 //import org.eclipse.blauncher.ui.BlauncherConstants;
-import org.eclipse.blauncher.ui.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy; 
@@ -30,6 +27,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
+
+import com.avvero.blauncher.ui.IBlauncherUIConstants;
+import com.avvero.blauncher.ui.Messages;
+import com.avvero.blauncher.ui.Utils;
 
 
 /**
@@ -244,7 +245,9 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 			setErrorMessage(Messages.NotFoundConfiguartions);
 			try {
 				updateConfigFromSelectedConfigurations(launchConfig.getWorkingCopy());
-			} catch (CoreException e) {DebugUIPlugin.log(e);}
+			} catch (CoreException e) {
+				DebugUIPlugin.log(e);
+			}
 		} else if (!isConfigurationsSelected) {
 			setErrorMessage(Messages.ConfiguartionsNotSelected);
 		}
@@ -315,7 +318,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 			boolean isDeleted = false;
 			Iterator<ILaunchConfiguration> i = selectedLaunchConfigurations.iterator();
 			while (i.hasNext()) {
-				ILaunchConfiguration entry = i.next(); // must be called before you can call i.remove()
+				ILaunchConfiguration entry = i.next(); 
 				if (entry.equals(configuration)) {
 					i.remove();
 					isDeleted = true;

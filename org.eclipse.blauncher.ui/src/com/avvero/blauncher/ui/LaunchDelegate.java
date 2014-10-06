@@ -1,4 +1,4 @@
-package org.eclipse.blauncher.ui;
+package com.avvero.blauncher.ui;
 
 import java.util.List;
 
@@ -27,15 +27,13 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 			final String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
 		// Only valid configuration (where all stored configurations exists and
-		// can
-		// be fetched by launch manager) can be launched
+		// can be fetched by launch manager) can be launched
 		if (Utils.isConfigurationValid(configuration)) {
 			List<ILaunchConfiguration> list = Utils
 					.getStoredConfigurations(configuration);
 			for (ILaunchConfiguration conf : list) {
 				if (!conf.getName().equals(configuration.getName())) {
 					conf.launch(mode, new SubProgressMonitor(monitor, 1), true);
-					// DebugUITools.launch(configuration, mode);
 				}
 			}
 		} else {

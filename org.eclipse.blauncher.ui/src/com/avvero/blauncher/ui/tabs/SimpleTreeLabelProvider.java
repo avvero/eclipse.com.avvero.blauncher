@@ -1,4 +1,4 @@
-package org.eclipse.blauncher.ui.tabs;
+package com.avvero.blauncher.ui.tabs;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;

@@ -1,4 +1,4 @@
-package org.eclipse.blauncher.ui;
+package com.avvero.blauncher.ui;
 
 import org.eclipse.debug.ui.IDebugUIConstants;
 

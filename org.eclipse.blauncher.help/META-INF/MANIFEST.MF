@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Bunch launcher Help
-Bundle-SymbolicName: org.eclipse.blauncher.help;singleton:=true
+Bundle-SymbolicName: com.avvero.blauncher.help;singleton:=true
 Bundle-Version: 1.0.0.qualifier

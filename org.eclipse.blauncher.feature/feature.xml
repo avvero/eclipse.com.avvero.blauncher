@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.blauncher"
+      id="com.avvero.blauncher"
       label="Bunch launcher"
       version="1.0.0.qualifier">
 
@@ -14,13 +14,13 @@ launch launch launch
    </license>
 
    <plugin
-         id="org.eclipse.blauncher.help"
+         id="com.avvero.blauncher.help"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.blauncher.ui"
+         id="com.avvero.blauncher.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

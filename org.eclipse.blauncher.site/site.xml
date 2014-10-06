@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.blauncher_1.0.0.201410031659.jar" id="org.eclipse.blauncher" version="1.0.0.201410031659">
-      <category name="org.eclipse.blauncher"/>
+   <feature url="features/com.avvero.blauncher_1.0.0.201410061954.jar" id="com.avvero.blauncher" version="1.0.0.201410061954">
+      <category name="com.avvero.blauncher"/>
    </feature>
-   <category-def name="org.eclipse.blauncher" label="Bunch launcher">
+   <category-def name="com.avvero.blauncher" label="Bunch launcher">
       <description>
          Launch configuration for launch other launch configurations. 
 launch launch launch

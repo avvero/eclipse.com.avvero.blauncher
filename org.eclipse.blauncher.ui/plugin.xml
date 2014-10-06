@@ -4,8 +4,8 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.eclipse.blauncher.ui.LaunchDelegate"
-            id="org.eclipse.blauncher.ui.launchConfiguration"
+            delegate="com.avvero.blauncher.ui.LaunchDelegate"
+            id="com.avvero.blauncher.ui.launchConfiguration"
             modes="run,debug"
             name="Bunch launcher">
       </launchConfigurationType>
@@ -13,17 +13,17 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            configTypeID="org.eclipse.blauncher.ui.launchConfiguration"
+            configTypeID="com.avvero.blauncher.ui.launchConfiguration"
             icon="images/Rotate1.ico"
-            id="org.eclipse.blauncher.ui.launchConfigurationTypeImage2">
+            id="com.avvero.blauncher.ui.launchConfigurationTypeImage2">
       </launchConfigurationTypeImage>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            class="org.eclipse.blauncher.ui.tabs.ConfigurationTabGroup"
-            id="org.eclipse.blauncher.ui.launchConfigurationTabGroup1"
-            type="org.eclipse.blauncher.ui.launchConfiguration">
+            class="com.avvero.blauncher.ui.tabs.ConfigurationTabGroup"
+            id="com.avvero.blauncher.ui.launchConfigurationTabGroup1"
+            type="com.avvero.blauncher.ui.launchConfiguration">
       </launchConfigurationTabGroup>
    </extension>
    <!-- org.eclipse.debug.ui.launchShortcuts will not be here, because it has no sense. 

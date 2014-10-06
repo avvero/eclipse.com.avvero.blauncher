@@ -1,6 +1,6 @@
-package org.eclipse.blauncher.ui;
+package com.avvero.blauncher.ui;
 
-import static org.eclipse.blauncher.ui.IBlauncherUIConstants.SELECTED_CONFIGURATIONS;
+import static com.avvero.blauncher.ui.IBlauncherUIConstants.SELECTED_CONFIGURATIONS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -172,8 +172,7 @@ public class Utils {
 		if (storedNames.size() > 0) {
 			Iterator<String> i = storedNames.iterator();
 			while (i.hasNext()) {
-				String name = i.next(); // must be called before you can call
-										// i.remove()
+				String name = i.next();
 				ILaunchConfiguration foundConfiguration = Utils
 						.getLaunchConfigurationByName(name);
 				if (foundConfiguration != null) {

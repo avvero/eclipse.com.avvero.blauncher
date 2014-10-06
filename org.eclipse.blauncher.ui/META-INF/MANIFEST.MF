@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Bunch launcher
-Bundle-SymbolicName: org.eclipse.blauncher.ui;singleton:=true
+Bundle-SymbolicName: com.avvero.blauncher.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.eclipse.blauncher.ui.Activator
+Bundle-Activator: com.avvero.blauncher.ui.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.debug.core,
