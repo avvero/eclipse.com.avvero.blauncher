@@ -6,6 +6,7 @@ import java.util.List;
 
 import static com.avvero.blauncher.ui.IBlauncherUIConstants.SELECTED_CONFIGURATIONS;
 
+
 //import org.eclipse.blauncher.ui.BlauncherConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -124,12 +125,12 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 		treeSection = createDefaultComposite(parent);
 		checkboxTreeViewer = new CheckboxTreeViewer(treeSection, SWT.BORDER);
 		Tree tree = checkboxTreeViewer.getTree();
-		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));		
 		checkboxTreeViewer.setContentProvider(new SimpleTreeContentProvider(){
 			@Override
 			public Object[] getElements(Object inputElement) {				
 				return getAllConfigurationsForTree().toArray();
-			}});		
+			}});	
 		checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {			
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {

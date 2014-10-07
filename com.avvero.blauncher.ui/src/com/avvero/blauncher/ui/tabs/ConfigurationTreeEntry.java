@@ -36,7 +36,5 @@ public class ConfigurationTreeEntry {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
 
 }

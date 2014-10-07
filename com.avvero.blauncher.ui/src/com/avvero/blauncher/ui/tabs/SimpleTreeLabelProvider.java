@@ -1,5 +1,9 @@
 package com.avvero.blauncher.ui.tabs;
 
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.debug.ui.IDebugModelPresentation;
+import org.eclipse.debug.ui.ILaunchGroup;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
@@ -32,7 +36,13 @@ public class SimpleTreeLabelProvider implements ILabelProvider {
 
 	@Override
 	public Image getImage(Object element) {
-		// TODO Auto-generated method stub
+		ConfigurationTreeEntry entry = ((ConfigurationTreeEntry) element);
+		ILaunchConfiguration configuration = entry.getConfiguration();
+		if (configuration != null) {
+			IDebugModelPresentation debugModelPresentation = DebugUITools.newDebugModelPresentation();
+			Image image = debugModelPresentation.getImage(configuration);
+			return image;	
+		}
 		return null;
 	}
 
