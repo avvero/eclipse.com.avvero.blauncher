@@ -4,8 +4,8 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="com.avvero.blauncher.ui.LaunchDelegate"
-            id="com.avvero.blauncher.ui.launchConfiguration"
+            delegate="com.avvero.blauncher.core.LaunchDelegate"
+            id="com.avvero.blauncher.core.launchConfiguration"
             modes="run,debug"
             name="Bunch launcher">
       </launchConfigurationType>
@@ -13,18 +13,10 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            configTypeID="com.avvero.blauncher.ui.launchConfiguration"
+            configTypeID="com.avvero.blauncher.core.launchConfiguration"
             icon="images/Rotate1.ico"
-            id="com.avvero.blauncher.ui.launchConfigurationTypeImage2">
+            id="com.avvero.blauncher.core.launchConfigurationTypeImage2">
       </launchConfigurationTypeImage>
-   </extension>
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-      <launchConfigurationTabGroup
-            class="com.avvero.blauncher.ui.tabs.ConfigurationTabGroup"
-            id="com.avvero.blauncher.ui.launchConfigurationTabGroup1"
-            type="com.avvero.blauncher.ui.launchConfiguration">
-      </launchConfigurationTabGroup>
    </extension>
    <!-- org.eclipse.debug.ui.launchShortcuts will not be here, because it has no sense. 
         This configuration is for launching other configuration, not for projects.
