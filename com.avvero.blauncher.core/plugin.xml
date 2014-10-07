@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="com.avvero.blauncher.ui.LaunchDelegate"
+            id="com.avvero.blauncher.ui.launchConfiguration"
+            modes="run,debug"
+            name="Bunch launcher">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="com.avvero.blauncher.ui.launchConfiguration"
+            icon="images/Rotate1.ico"
+            id="com.avvero.blauncher.ui.launchConfigurationTypeImage2">
+      </launchConfigurationTypeImage>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="com.avvero.blauncher.ui.tabs.ConfigurationTabGroup"
+            id="com.avvero.blauncher.ui.launchConfigurationTabGroup1"
+            type="com.avvero.blauncher.ui.launchConfiguration">
+      </launchConfigurationTabGroup>
+   </extension>
+   <!-- org.eclipse.debug.ui.launchShortcuts will not be here, because it has no sense. 
+        This configuration is for launching other configuration, not for projects.
+        My vassal's vassal is not my vassal. -->   
+</plugin>
