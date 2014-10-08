@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -28,12 +30,12 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		// Only valid configuration (where all stored configurations exists and
 		// can be fetched by launch manager) can be launched
 		if (Utils.isConfigurationValid(configuration)) {
-			List<ILaunchConfiguration> list = Utils.getStoredConfigurations(configuration);
-			for (ILaunchConfiguration conf : list) {
-				if (!conf.getName().equals(configuration.getName())) {
-					conf.launch(mode, new SubProgressMonitor(monitor, 1), true);
-				}
+			List<ILaunchConfiguration> storedConfigurations = Utils.getStoredConfigurations(configuration);			
+			SubMonitor progress = SubMonitor.convert(monitor, configuration.getName(), storedConfigurations.size());
+			for (ILaunchConfiguration conf : storedConfigurations) {
+				launchAndAttach(conf, mode, launch, progress.newChild(1));
 			}
+			monitor.done();
 		} else {
 			// Open dialog to show problem with configuration
 			Display.getDefault().asyncExec(new Runnable() {
@@ -50,5 +52,29 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 				}
 			});
 		}
+	}	
+	
+	/**
+	 * Launches the given configuration in the specified mode and attach contributed by launch method
+	 * debug targets and/or processes to parent launch.
+	 * @param configuration
+	 * @param mode
+	 * @param launch
+	 * @param monitor
+	 * @throws CoreException
+	 */
+	public void launchAndAttach(final ILaunchConfiguration configuration, final String mode, ILaunch launch, 
+			IProgressMonitor monitor) throws CoreException {
+		if (configuration.supportsMode(mode)) {
+			// Launch
+			ILaunch result = configuration.launch(mode, monitor);
+			// Attach
+			for (IDebugTarget target : result.getDebugTargets()) {
+				launch.addDebugTarget(target);
+			}
+			for (IProcess process : result.getProcesses()) {
+				launch.addProcess(process);
+			}
+		}	
 	}
 }
