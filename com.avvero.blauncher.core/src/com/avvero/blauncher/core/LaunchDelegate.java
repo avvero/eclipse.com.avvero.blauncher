@@ -28,8 +28,7 @@ public class LaunchDelegate implements ILaunchConfigurationDelegate {
 		// Only valid configuration (where all stored configurations exists and
 		// can be fetched by launch manager) can be launched
 		if (Utils.isConfigurationValid(configuration)) {
-			List<ILaunchConfiguration> list = Utils
-					.getStoredConfigurations(configuration);
+			List<ILaunchConfiguration> list = Utils.getStoredConfigurations(configuration);
 			for (ILaunchConfiguration conf : list) {
 				if (!conf.getName().equals(configuration.getName())) {
 					conf.launch(mode, new SubProgressMonitor(monitor, 1), true);

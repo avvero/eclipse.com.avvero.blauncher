@@ -11,7 +11,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.internal.ui.DebugUIPlugin;
 
 /**
  * Useful methods
@@ -71,9 +70,7 @@ public class Utils {
 					return conf;
 				}
 			}
-		} catch (CoreException e) {
-			DebugUIPlugin.log(e);
-		}
+		} catch (CoreException e) {}
 		return null;
 	}
 
@@ -83,14 +80,13 @@ public class Utils {
 	 * @param launchConfig the instance of ILaunchConfiguration
 	 * @return the list of names of configurations 
 	 */
+	@SuppressWarnings("unchecked")
 	public static List<String> getNamesOfStoredConfigurations(
 			ILaunchConfiguration launchConfig) {
 		List<String> selectedNames;
 		try {
-			selectedNames = launchConfig.getAttribute(SELECTED_CONFIGURATIONS,
-					new ArrayList<>());
+			selectedNames = launchConfig.getAttribute(SELECTED_CONFIGURATIONS, new ArrayList<>());
 		} catch (CoreException e) {
-			DebugUIPlugin.log(e);
 			selectedNames = new ArrayList<>();
 		}
 		return selectedNames;
@@ -110,8 +106,7 @@ public class Utils {
 			Iterator<String> i = storedNames.iterator();
 			while (i.hasNext()) {
 				String name = i.next();
-				ILaunchConfiguration foundConfiguration = Utils
-						.getLaunchConfigurationByName(name);
+				ILaunchConfiguration foundConfiguration = Utils.getLaunchConfigurationByName(name);
 				if (foundConfiguration == null) {
 					lostNames.add(name);
 				}
@@ -173,8 +168,7 @@ public class Utils {
 			Iterator<String> i = storedNames.iterator();
 			while (i.hasNext()) {
 				String name = i.next();
-				ILaunchConfiguration foundConfiguration = Utils
-						.getLaunchConfigurationByName(name);
+				ILaunchConfiguration foundConfiguration = Utils.getLaunchConfigurationByName(name);
 				if (foundConfiguration != null) {
 					storedConfigurations.add(foundConfiguration);
 				}
