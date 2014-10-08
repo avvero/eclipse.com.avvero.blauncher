@@ -1,9 +1,9 @@
-package com.avvero.blauncher.ui;
+package com.avvero.blauncher.ui.common;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "com.avvero.blauncher.ui.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "com.avvero.blauncher.ui.common.messages"; //$NON-NLS-1$
 	public static String SelectedConfigurationTabName;
 	public static String ChooseConfigurationsLabel;
 	public static String NotFoundConfiguartions;

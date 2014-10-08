@@ -1,4 +1,4 @@
-package com.avvero.blauncher.ui;
+package com.avvero.blauncher.ui.common;
 
 import com.avvero.blauncher.core.BlauncherCoreConstants;
 

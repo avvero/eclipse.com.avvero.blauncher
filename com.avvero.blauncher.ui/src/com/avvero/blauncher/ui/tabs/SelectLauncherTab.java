@@ -4,14 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.avvero.blauncher.ui.IBlauncherUIConstants.SELECTED_CONFIGURATIONS;
-
-
-//import org.eclipse.blauncher.ui.BlauncherConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy; 
-import org.eclipse.debug.internal.ui.SWTFactory;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -21,17 +16,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 
-import com.avvero.blauncher.ui.IBlauncherUIConstants;
-import com.avvero.blauncher.ui.Messages;
+import com.avvero.blauncher.ui.common.IBlauncherUIConstants;
+import com.avvero.blauncher.ui.common.Messages;
+import com.avvero.blauncher.ui.common.UIFactory;
 import com.avvero.blauncher.core.Utils;
 
+import static com.avvero.blauncher.ui.common.IBlauncherUIConstants.SELECTED_CONFIGURATIONS;
 
 /**
  * Controller for configuration selection
@@ -58,11 +54,11 @@ public class SelectLauncherTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void createControl(Composite parent) {						
-		Composite composite = createDefaultComposite(parent);
+		Composite composite = UIFactory.createDefaultComposite(parent);
         setControl(composite);	
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), getHelpContextId());		
 		addFirstSection(composite);
-		addSeparator(composite);
+		UIFactory.addSeparator(composite);
 		addTree(composite);		
 	}
 
@@ -71,10 +67,10 @@ public class SelectLauncherTab extends AbstractLaunchConfigurationTab {
 	 * @param parent
 	 */
 	private void addFirstSection(Composite parent) {
-		Composite fixTreeSection = createDefaultSection(parent);
-		Composite composite = SWTFactory.createComposite(fixTreeSection, parent.getFont(), 2, 2, 
+		Composite fixTreeSection = UIFactory.createDefaultSection(parent);
+		Composite composite = UIFactory.createComposite(fixTreeSection, parent.getFont(), 2, 2, 
 				GridData.FILL_BOTH, 0, 0);		
-		treeLabel = SWTFactory.createLabel(composite, Messages.ChooseConfigurationsLabel, 1);
+		treeLabel = UIFactory.createLabel(composite, Messages.ChooseConfigurationsLabel, 1);
 		fixTreeButton = createPushButton(composite, Messages.Purge, null);
 		fixTreeButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent evt) {
@@ -85,43 +81,8 @@ public class SelectLauncherTab extends AbstractLaunchConfigurationTab {
 		});	
 	}
 	
-	private Composite createDefaultSection(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		composite.setLayout(layout);
-
-		GridData data = new GridData();
-		data.verticalAlignment = GridData.FILL;
-		data.horizontalAlignment = GridData.FILL;
-		composite.setLayoutData(data);		
-
-		return composite;
-	}
-		
-	private Composite createDefaultComposite(Composite parent) {
-		Composite tt = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		tt.setLayout(layout);
-		GridData data = new GridData(GridData.FILL);
-		data.grabExcessHorizontalSpace = true;
-		data.grabExcessVerticalSpace = true;
-		data.verticalAlignment = GridData.FILL;
-		data.horizontalAlignment = GridData.FILL;
-		tt.setLayoutData(data);
-		return tt;
-	}		
-
-	private void addSeparator(Composite parent) {
-		Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
-		GridData gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.grabExcessHorizontalSpace = true;
-		separator.setLayoutData(gridData);
-	}
-	
 	private void addTree(Composite parent) {
-		treeSection = createDefaultComposite(parent);
+		treeSection = UIFactory.createDefaultComposite(parent);
 		checkboxTreeViewer = new CheckboxTreeViewer(treeSection, SWT.BORDER);
 		Tree tree = checkboxTreeViewer.getTree();
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));		
