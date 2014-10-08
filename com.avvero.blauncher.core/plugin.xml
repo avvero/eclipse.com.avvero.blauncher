@@ -14,7 +14,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
             configTypeID="com.avvero.blauncher.core.launchConfiguration"
-            icon="images/Rotate1.ico"
+            icon="images/stack.ico"
             id="com.avvero.blauncher.core.launchConfigurationTypeImage2">
       </launchConfigurationTypeImage>
    </extension>

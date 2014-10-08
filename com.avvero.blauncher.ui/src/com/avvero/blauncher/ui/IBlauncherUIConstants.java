@@ -1,12 +1,8 @@
 package com.avvero.blauncher.ui;
 
-import org.eclipse.debug.ui.IDebugUIConstants;
+import com.avvero.blauncher.core.BlauncherCoreConstants;
 
-public interface IBlauncherUIConstants {
-	
-	String PLUGIN_ID = "org.eclipse.blauncher.ui";
-	String PREFIX = IDebugUIConstants.PLUGIN_ID + "."; 
-	String SELECTED_CONFIGURATIONS = PREFIX + "selectedConfigurations";	
+public interface IBlauncherUIConstants extends BlauncherCoreConstants {
 	
 	String SELECTE_CONFIGURATION_TAB = PREFIX + "selecte_configuration_tab"; 
 	

@@ -11,7 +11,6 @@ import static com.avvero.blauncher.ui.IBlauncherUIConstants.SELECTED_CONFIGURATI
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy; 
-import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.SWTFactory;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
@@ -31,7 +30,7 @@ import org.eclipse.ui.PlatformUI;
 
 import com.avvero.blauncher.ui.IBlauncherUIConstants;
 import com.avvero.blauncher.ui.Messages;
-import com.avvero.blauncher.ui.Utils;
+import com.avvero.blauncher.core.Utils;
 
 
 /**
@@ -39,13 +38,13 @@ import com.avvero.blauncher.ui.Utils;
  * @author belyaev-ay
  *
  */
-public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
+public class SelectLauncherTab extends AbstractLaunchConfigurationTab {
 	
 	/**
 	 * Tab for configuration selection
 	 * @wbp.parser.entryPoint
 	 */
-	SelectLouncherTab () {
+	SelectLauncherTab () {
 		setHelpContextId(IBlauncherUIConstants.SELECTE_CONFIGURATION_TAB);
 	}
 
@@ -246,9 +245,7 @@ public class SelectLouncherTab extends AbstractLaunchConfigurationTab {
 			setErrorMessage(Messages.NotFoundConfiguartions);
 			try {
 				updateConfigFromSelectedConfigurations(launchConfig.getWorkingCopy());
-			} catch (CoreException e) {
-				DebugUIPlugin.log(e);
-			}
+			} catch (CoreException e) {}
 		} else if (!isConfigurationsSelected) {
 			setErrorMessage(Messages.ConfiguartionsNotSelected);
 		}
