@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/com.avvero.blauncher_1.0.0.201410061954.jar" id="com.avvero.blauncher" version="1.0.0.201410061954">
+   <feature url="features/com.avvero.blauncher_1.0.0.201410090924.jar" id="com.avvero.blauncher" version="1.0.0.201410090924">
       <category name="com.avvero.blauncher"/>
    </feature>
    <category-def name="com.avvero.blauncher" label="Bunch launcher">
