@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
+
+import javax.inject.Inject;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -19,6 +22,9 @@ import org.eclipse.debug.core.ILaunchManager;
  * 
  */
 public class Utils {
+	
+	@Inject
+	static Logger logger; 
 
 	/**
 	 * Get all configurations available for launch by configuration currentLaunchConfiguration (i.e.
@@ -70,7 +76,9 @@ public class Utils {
 					return conf;
 				}
 			}
-		} catch (CoreException e) {}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 

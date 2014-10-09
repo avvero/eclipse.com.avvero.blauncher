@@ -206,7 +206,9 @@ public class SelectLauncherTab extends AbstractLaunchConfigurationTab {
 			setErrorMessage(Messages.NotFoundConfiguartions);
 			try {
 				updateConfigFromSelectedConfigurations(launchConfig.getWorkingCopy());
-			} catch (CoreException e) {}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
 		} else if (!isConfigurationsSelected) {
 			setErrorMessage(Messages.ConfiguartionsNotSelected);
 		}
